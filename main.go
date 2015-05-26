@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"flag"
+	"io/ioutil"
 )
 
 var apikey = flag.String("apikey", "", "API key for mailgun")
