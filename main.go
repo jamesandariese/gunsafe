@@ -10,7 +10,6 @@ import (
 )
 
 var apikey = flag.String("apikey", "", "API key for mailgun")
-var spooldir = flag.String("spool", "/spool", "Spool directory")
 
 // hello world, the web server
 func HandleMailgunStoreForwardHook(w http.ResponseWriter, req *http.Request) {
