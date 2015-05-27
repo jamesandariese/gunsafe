@@ -14,5 +14,8 @@ RUN go install strudelline.net/gunsafe
 ENTRYPOINT ["/go/bin/gunsafe"]
 
 # Document that the service listens on port 8080.
-EXPOSE 80
+EXPOSE 8080
 
+RUN groupadd -f -g 500 core ; useradd -N -M -u 500 -g 500 core
+
+USER core
