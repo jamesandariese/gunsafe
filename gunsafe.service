@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunsafe Mailgun Spooler
+After=docker.service
+
+[Service]
+User=core
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/docker run --rm -v /home/core/Mail:/mail -p 25000:8080 --name gunsafe jamesandariese/gunsafe -apikey key-0123456789abcdef0123456789abcdef
+ExecStop=/usr/bin/docker kill gunsafe
+
+[Install]
+WantedBy=default.target
