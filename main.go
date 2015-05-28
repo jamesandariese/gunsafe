@@ -9,7 +9,8 @@ import (
 	"strudelline.net/gunsafe/deliver"
 )
 
-var apikey = flag.String("apikey", "", "API key for mailgun")
+var apikey = flag.String("apikey", "", "Mailgun API key")
+var maildirIn = flag.String("maildir", "mail/INBOX", "Maildir pattern to deliver into; %s is email address")
 
 // hello world, the web server
 func HandleMailgunStoreForwardHook(w http.ResponseWriter, req *http.Request) {
@@ -22,7 +23,7 @@ func HandleMailgunStoreForwardHook(w http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	err := deliver.Deliver(req.FormValue("message-url"))
+	err := deliver.Deliver(req.FormValue("message-url"), *apikey, *maildirIn)
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, "Error processing: %v\n", err)
@@ -48,9 +49,17 @@ func HandleMailgunStoreForwardHook(w http.ResponseWriter, req *http.Request) {
 	*/
 }
 
+var bind = flag.String("bind", ":8080", "[IP]:PORT to bind to")
+
 func main() {
+	flag.Parse()
+
+	if *apikey == "" {
+		log.Fatal("API Key is required")
+	}
+
 	http.HandleFunc("/gunsafe", HandleMailgunStoreForwardHook)
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(*bind, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

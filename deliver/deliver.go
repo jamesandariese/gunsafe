@@ -14,10 +14,7 @@ import (
 
 var MessageDownloadError = errors.New("Message Download Error")
 
-var apikey = flag.String("apikey", "", "Mailgun API key")
-var maildirIn = flag.String("maildir", "mail", "Maildir pattern to deliver into; %s is username")
-
-func Deliver(url string) error {
+func Deliver(url, apikey, maildirIn string) error {
 	if !flag.Parsed() {
 		flag.Parse()
 	}
@@ -26,7 +23,7 @@ func Deliver(url string) error {
 	if err != nil {
 		return err
 	}
-	request.SetBasicAuth("api", *apikey)
+	request.SetBasicAuth("api", apikey)
 
 	request.Header.Add("Accept", "message/rfc2822")
 
@@ -45,7 +42,7 @@ func Deliver(url string) error {
 	decoder.Decode(&decoded)
 	fmt.Fprintf(os.Stderr, "%#v", decoded)
 
-	md := maildir.Dir(*maildirIn)
+	md := maildir.Dir(maildirIn)
 	md.Create()
 	if err := md.Clean(); err != nil {
 		return err
